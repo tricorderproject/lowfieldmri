@@ -423,6 +423,32 @@ chip</description>
 <circle x="-1.75" y="-1.25" radius="0.25" width="0.127" layer="21"/>
 <text x="-2.25" y="-1.5" size="1.016" layer="21" rot="R90">&gt;NAME</text>
 </package>
+<package name="16-QFN">
+<smd name="1" x="0.75" y="1.6" dx="0.3" dy="1" layer="1" roundness="100"/>
+<smd name="2" x="0.25" y="1.6" dx="0.3" dy="1" layer="1" roundness="100"/>
+<smd name="3" x="-0.25" y="1.6" dx="0.3" dy="1" layer="1" roundness="100"/>
+<smd name="4" x="-0.75" y="1.6" dx="0.3" dy="1" layer="1" roundness="100"/>
+<smd name="5" x="-1.6" y="0.75" dx="0.3" dy="1" layer="1" roundness="100" rot="R90"/>
+<smd name="6" x="-1.6" y="0.25" dx="0.3" dy="1" layer="1" roundness="100" rot="R90"/>
+<smd name="7" x="-1.6" y="-0.25" dx="0.3" dy="1" layer="1" roundness="100" rot="R90"/>
+<smd name="8" x="-1.6" y="-0.75" dx="0.3" dy="1" layer="1" roundness="100" rot="R90"/>
+<smd name="9" x="-0.75" y="-1.6" dx="0.3" dy="1" layer="1" roundness="100" rot="R180"/>
+<smd name="10" x="-0.25" y="-1.6" dx="0.3" dy="1" layer="1" roundness="100" rot="R180"/>
+<smd name="11" x="0.25" y="-1.6" dx="0.3" dy="1" layer="1" roundness="100" rot="R180"/>
+<smd name="12" x="0.75" y="-1.6" dx="0.3" dy="1" layer="1" roundness="100" rot="R180"/>
+<smd name="13" x="1.6" y="-0.75" dx="0.3" dy="1" layer="1" roundness="100" rot="R270"/>
+<smd name="14" x="1.6" y="-0.25" dx="0.3" dy="1" layer="1" roundness="100" rot="R270"/>
+<smd name="15" x="1.6" y="0.25" dx="0.3" dy="1" layer="1" roundness="100" rot="R270"/>
+<smd name="16" x="1.6" y="0.75" dx="0.3" dy="1" layer="1" roundness="100" rot="R270"/>
+<circle x="1.6" y="1.65" radius="0.22360625" width="0.127" layer="21"/>
+<text x="-1.7" y="2.4" size="0.7" layer="21">&gt;NAME</text>
+<wire x1="-1.75" y1="1.25" x2="-1.75" y2="1.75" width="0.127" layer="21"/>
+<wire x1="-1.75" y1="1.75" x2="-1.25" y2="1.75" width="0.127" layer="21"/>
+<wire x1="-1.75" y1="-1.25" x2="-1.75" y2="-1.75" width="0.127" layer="21"/>
+<wire x1="-1.75" y1="-1.75" x2="-1.25" y2="-1.75" width="0.127" layer="21"/>
+<wire x1="1.25" y1="-1.75" x2="1.75" y2="-1.75" width="0.127" layer="21"/>
+<wire x1="1.75" y1="-1.75" x2="1.75" y2="-1.25" width="0.127" layer="21"/>
+</package>
 </packages>
 <symbols>
 <symbol name="1X03">
@@ -781,6 +807,25 @@ chip</description>
 <wire x1="10.16" y1="7.62" x2="-10.16" y2="7.62" width="0.254" layer="94"/>
 <text x="-10.16" y="7.62" size="1.778" layer="95">&gt;NAME</text>
 <text x="-10.16" y="-15.24" size="1.778" layer="96">&gt;VALUE</text>
+</symbol>
+<symbol name="MLX90393">
+<pin name="VDD" x="-17.78" y="7.62" length="middle"/>
+<pin name="VDDIO" x="-17.78" y="5.08" length="middle"/>
+<pin name="GND" x="-17.78" y="-12.7" length="middle"/>
+<pin name="SDA/MOSI" x="17.78" y="7.62" length="middle" rot="R180"/>
+<pin name="MISO" x="17.78" y="5.08" length="middle" rot="R180"/>
+<pin name="SCL/SCLK" x="17.78" y="2.54" length="middle" rot="R180"/>
+<pin name="SENB/CS" x="17.78" y="0" length="middle" rot="R180"/>
+<pin name="A0" x="17.78" y="-10.16" length="middle" rot="R180"/>
+<pin name="A1" x="17.78" y="-12.7" length="middle" rot="R180"/>
+<pin name="INT" x="17.78" y="-2.54" length="middle" rot="R180"/>
+<pin name="INT/TRIG" x="17.78" y="-5.08" length="middle" rot="R180"/>
+<wire x1="-12.7" y1="10.16" x2="-12.7" y2="-15.24" width="0.254" layer="94"/>
+<wire x1="-12.7" y1="-15.24" x2="12.7" y2="-15.24" width="0.254" layer="94"/>
+<wire x1="12.7" y1="-15.24" x2="12.7" y2="10.16" width="0.254" layer="94"/>
+<wire x1="12.7" y1="10.16" x2="-12.7" y2="10.16" width="0.254" layer="94"/>
+<text x="-12.7" y="-17.78" size="1.778" layer="97">MLX90393</text>
+<text x="-12.7" y="-20.32" size="1.778" layer="97">3-axis Magnetometer</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -1301,6 +1346,32 @@ Basic schematic elements and footprints for 0603, 1206, and PTH 1/10th watt (sma
 <connect gate="G$1" pin="2" pad="2"/>
 <connect gate="G$1" pin="3" pad="3"/>
 <connect gate="G$1" pin="4" pad="4"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="MLX90393">
+<description>Melexis MLX90393 3-axis magnetometer</description>
+<gates>
+<gate name="G$1" symbol="MLX90393" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="16-QFN">
+<connects>
+<connect gate="G$1" pin="A0" pad="12"/>
+<connect gate="G$1" pin="A1" pad="11"/>
+<connect gate="G$1" pin="GND" pad="13"/>
+<connect gate="G$1" pin="INT" pad="1"/>
+<connect gate="G$1" pin="INT/TRIG" pad="7"/>
+<connect gate="G$1" pin="MISO" pad="6"/>
+<connect gate="G$1" pin="SCL/SCLK" pad="3"/>
+<connect gate="G$1" pin="SDA/MOSI" pad="5"/>
+<connect gate="G$1" pin="SENB/CS" pad="2"/>
+<connect gate="G$1" pin="VDD" pad="15"/>
+<connect gate="G$1" pin="VDDIO" pad="8"/>
 </connects>
 <technologies>
 <technology name=""/>
