@@ -8,16 +8,16 @@ s = serial.Serial("/dev/ttyACM0", 115200)
 
 s.write(b"Hello World")
 
-for a in range(0, 10):
+for a in range(0, 100):
     # Wait for 'data'
-    for i in range(0, 10000):
+    for i in range(0, 100000):
         line = s.readline()
         line = line.decode('UTF-8').strip()    
         if (line.startswith("DATA:")):
             break
 
     data = []
-    for i in range(0, 1000):
+    for i in range(0, 100000):
         line = s.readline()   # read a '\n' terminated line
         line = line.decode('UTF-8').strip()    
 

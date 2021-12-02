@@ -1,18 +1,9 @@
-/* LED Blink, Teensyduino Tutorial #1
-   http://www.pjrc.com/teensy/tutorial.html
- 
-   This example code is in the public domain.
-*/
+// Pins
+#define DIGIPOT_CS    3
+#define DIGIPOT_MOSI  5
+#define DIGIPOT_SCLK  4
 
-// Teensy 2.0 has the LED on pin 11
-// Teensy++ 2.0 has the LED on pin 6
-// Teensy 3.x / Teensy LC have the LED on pin 13
-const int ledPin = 13;
-
-// DIGIPOT
-#define DIGIPOT_CS  8
-#define DIGIPOT_SDI 7
-#define DIGIPOT_SCK 6
+#define SPI_CS        53
 
 // AD7680
 #define ADC_CS    10
@@ -41,7 +32,7 @@ uint16_t readAD7680() {
     digitalWrite(ADC_SCK, 1);   // Clock up (data valid)
     shortDelay();
     // Read bit
-    uint8_t bitIn = digitalRead(ADC_MISO);
+    int bitIn = digitalRead(ADC_MISO);
     //Serial.print("BIT: "); Serial.println(bitIn);
     value = value << 1;
     value = value + (bitIn & 0x01);    
@@ -69,62 +60,132 @@ void setupAD7680() {
   idleAD7680();
 }
 
-void setupDigipot() {
-  pinMode(DIGIPOT_CS, OUTPUT);
-  pinMode(DIGIPOT_SDI, OUTPUT);
-  pinMode(DIGIPOT_SCK, OUTPUT);
+
+// Read AD7680 16-bit ADC
+uint16_t ReadAD7680() {
+  uint8_t sendBuffer[3] = {0, 0, 0};
+  uint8_t receiveBuffer[3] = {0, 0, 0};
+  
+  // Bring SS low to begin the transaction.
+  //  spi.setSelect(LOW);
+  digitalWrite(SPI_CS, LOW);
+
+
+  // Delay a short while
+  //Delay10us();
+
+  // Clock data from the AD7680.  It takes 3 bytes per conversion. 
+  //## spi.transfer(3, sendBuffer, receiveBuffer);
+  
+  // Bring SS high to end the transaction.
+//  spi.setSelect(HIGH);
+  digitalWrite(SPI_CS, HIGH);
+
+  // Extract the 16-bit ADC value from the 24-bit buffer.  
+  // 4 leading and 4 trailing zeros.    
+  uint16_t out = (receiveBuffer[0] << 12) + (receiveBuffer[1] << 4) + (receiveBuffer[2] >> 4);
+  /*
+  Serial.print(uint16_t(receiveBuffer[0]));
+  Serial.print(",");
+  Serial.print(uint16_t(receiveBuffer[1]));
+  Serial.print(",");
+  Serial.print(uint16_t(receiveBuffer[2]));
+  Serial.println("");
+  */
+  return out;
 }
 
-void idleDigipot() {
-  digitalWrite(DIGIPOT_CS, 1);
-  digitalWrite(DIGIPOT_SDI, 1);
-  digitalWrite(DIGIPOT_SCK, 1);
-}
 
-// the setup() method runs once, when the sketch starts
-void setup() {
-  // initialize the digital pin as an output.
-  pinMode(ledPin, OUTPUT);
-
-  setupAD7680();
-  idleAD7680();
-
-  setupDigipot();
-  idleDigipot();
-
-  Serial.begin(115200);
-}
-
-// the loop() methor runs over and over again,
-// as long as the board has power
-
-int count = 0;
-#define MAX_SAMPLES   10000
-void loop() {
-  digitalWrite(ledPin, HIGH);   // set the LED on
-  delay(100);                  // wait for a second
-  digitalWrite(ledPin, LOW);    // set the LED off
-  delay(100);                  // wait for a second
-
-  //count += 1;
-  //Serial.println(count);
-
-  uint16_t data[MAX_SAMPLES];
-  long startTime = millis();
-  for (int i=0; i<MAX_SAMPLES; i++) {    
-    uint16_t value = readAD7680();
-    data[i] = value;
-    //Serial.println(value);
+//  Delay10us
+void Delay10us() {
+  volatile int  cnt;
+  for (cnt = 0; cnt < 100; cnt++) {
   }
-  long deltaTime = millis() - startTime;
+}
 
+
+/*
+ * Digipot
+ */ 
+void setDigipot(uint8_t value) {
+  // Idle
+  uint8_t val = value;
+  digitalWrite(DIGIPOT_SCLK, 1);
+  delay(2);
+  digitalWrite(DIGIPOT_CS, 0);  // Active
+  delay(2);  
   
+  for (int i=0; i<8; i++) {
+    digitalWrite(DIGIPOT_SCLK, 0);        // Inactive
+    delay(1);
+    
+    // Data
+    if ((val & 0x80) > 0) {
+      digitalWrite(DIGIPOT_MOSI, 1);
+      //Serial.print("1");
+    } else {
+      digitalWrite(DIGIPOT_MOSI, 0);
+      //Serial.print("0");      
+    }
+    val = val << 1;
+    delay(1);
+    
+    digitalWrite(DIGIPOT_SCLK, 1);      // Active
+    delay(2);
+      
+  }
+  
+  digitalWrite(DIGIPOT_SCLK, 0);      // Inactive
+  delay(2);
+  
+  digitalWrite(DIGIPOT_CS, 1);   // Inactive
+  // Serial.println("");
+}
+
+
+void setup() {
+
+  // Setup pins for Digipot  
+  pinMode(DIGIPOT_CS, OUTPUT);
+  pinMode(DIGIPOT_MOSI, OUTPUT);
+  pinMode(DIGIPOT_SCLK, OUTPUT);
+  
+  setupAD7680();
+  
+  // Serial console
+  Serial.begin(115200);
+  Serial.println("Initializing...");
+  
+  Serial.println("before");
+  //setDigipot(128);
+  //setDigipot(37);
+  Serial.println("after");
+  setDigipot(255);
+}
+
+#define MAX_VALUES 50000
+//#define MAX_VALUES 50
+int count = 0;
+void loop() {
+  digitalWrite(35, 0);
+  delay(100);
+  digitalWrite(35, 1);
+  delay(100);  
+    
+  uint16_t values[MAX_VALUES];
+  for (int i=0; i<MAX_VALUES; i++) {  
+    // Read ADC
+//    values[i] = ReadAD7680();    
+    values[i] = readAD7680();    
+
+  }
+
   Serial.println("DATA:");
-  for (int i=0; i<MAX_SAMPLES; i++) {
-    Serial.println(data[i]);
-  }  
-  //Serial.print("DELTA TIME: ");
-  //Serial.println(deltaTime);
-  delay(1000);
-  
+  for (int i=0; i<MAX_VALUES; i++) {
+    Serial.println(values[i]);    
+  }
+  //Serial.println("--------");
+  //Serial.println(count);
+  count += 1;
+  //delay(100);
 }
